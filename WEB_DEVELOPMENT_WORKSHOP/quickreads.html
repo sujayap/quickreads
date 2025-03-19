@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickReads - Short Form Content</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4cb5ae;
+            --light-bg: #f5f7fa;
+            --dark-text: #333;
+            --light-text: #f5f7fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            background-color: var(--light-text);
+            color: var(--primary-color);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1rem;
+        }
+
+        nav a {
+            color: var(--light-text);
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background-color: var(--secondary-color);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .categories {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-btn:hover {
+            background-color: #eee;
+        }
+
+        .category-btn.active {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .content-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .card-category {
+            background-color: var(--accent-color);
+            color: white;
+            font-size: 0.8rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .card-content {
+            padding: 1rem;
+        }
+
+        .card-title {
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .card-text {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .card-footer {
+            padding: 1rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            cursor: pointer;
+        }
+
+        .action-btn:hover {
+            color: var(--primary-color);
+        }
+
+        /* Animation for showing/hiding cards */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-card {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav ul {
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <div class="logo-icon">Q</div>
+            QuickReads
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active">Home</a></li>
+                <li><a href="#">Bookmarks</a></li>
+                <li><a href="#">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="categories">
+            <button class="category-btn active" data-category="All">All</button>
+            <button class="category-btn" data-category="Politics">Politics</button>
+            <button class="category-btn" data-category="Cinema">Cinema</button>
+            <button class="category-btn" data-category="Medicine">Medicine</button>
+            <button class="category-btn" data-category="Science">Science</button>
+            <button class="category-btn" data-category="Tech">Tech</button>
+        </div>
+
+        <div class="content-grid" id="contentGrid">
+            <div class="content-card" data-category="Politics">
+                <div class="card-header">
+                    <span class="card-category">Politics</span>
+                    <span>2 min read</span>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">New Environmental Policy Takes Effect Next Month</h3>
+                    <p class="card-text">The administration announced a major shift in environmental regulations that
+                        will impact industrial sectors nationwide. The policy aims to reduce carbon emissions by 30%
+                        over the next decade...</p>
+                </div>
+                <div class="card-footer">
+                    <span>3 hours ago</span>
+                    <div class="action-buttons">
+                        <div class="action-btn">
+                            <span>👍</span> 243
+                        </div>
+                        <div class="action-btn">
+                            <span>💬</span> 45
+                        </div>
+                        <div class="action-btn">
+                            <span>🔖</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card" data-category="Tech">
+                <div class="card-header">
+                    <span class="card-category">Tech</span>
+                    <span>1 min read</span>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Revolutionary AI Tool Creates Art in Seconds</h3>
+                    <p class="card-text">A new artificial intelligence platform is making waves in the creative industry
+                        by generating professional-quality artwork from simple text descriptions. Artists and designers
+                        are debating its implications...</p>
+                </div>
+                <div class="card-footer">
+                    <span>5 hours ago</span>
+                    <div class="action-buttons">
+                        <div class="action-btn">
+                            <span>👍</span> 542
+                        </div>
+                        <div class="action-btn">
+                            <span>💬</span> 87
+                        </div>
+                        <div class="action-btn">
+                            <span>🔖</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card" data-category="Science">
+                <div class="card-header">
+                    <span class="card-category">Science</span>
+                    <span>3 min read</span>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Breakthrough in Quantum Computing Achieved</h3>
+                    <p class="card-text">Researchers have announced a significant advancement in quantum computing that
+                        could revolutionize how we process complex data. The new approach solves a longstanding issue
+                        with quantum bit stability...</p>
+                </div>
+                <div class="card-footer">
+                    <span>1 day ago</span>
+                    <div class="action-buttons">
+                        <div class="action-btn">
+                            <span>👍</span> 378
+                        </div>
+                        <div class="action-btn">
+                            <span>💬</span> 52
+                        </div>
+                        <div class="action-btn">
+                            <span>🔖</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card" data-category="Cinema">
+                <div class="card-header">
+                    <span class="card-category">Cinema</span>
+                    <span>2 min read</span>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Award-Winning Director Announces New Film Project</h3>
+                    <p class="card-text">The acclaimed filmmaker behind last year's box office hit has revealed plans
+                        for an ambitious new sci-fi trilogy. Production is set to begin next month with several A-list
+                        actors already confirmed...</p>
+                </div>
+                <div class="card-footer">
+                    <span>8 hours ago</span>
+                    <div class="action-buttons">
+                        <div class="action-btn">
+                            <span>👍</span> 412
+                        </div>
+                        <div class="action-btn">
+                            <span>💬</span> 73
+                        </div>
+                        <div class="action-btn">
+                            <span>🔖</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card" data-category="Medicine">
+                <div class="card-header">
+                    <span class="card-category">Medicine</span>
+                    <span>4 min read</span>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">New Treatment Shows Promise for Chronic Pain</h3>
+                    <p class="card-text">Clinical trials for a groundbreaking pain management therapy have shown
+                        remarkable results. The non-invasive treatment targets specific neural pathways and has fewer
+                        side effects than conventional medications...</p>
+                </div>
+                <div class="card-footer">
+                    <span>2 days ago</span>
+                    <div class="action-buttons">
+                        <div class="action-btn">
+                            <span>👍</span> 287
+                        </div>
+                        <div class="action-btn">
+                            <span>💬</span> 38
+                        </div>
+                        <div class="action-btn">
+                            <span>🔖</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card" data-category="Politics">
+                <div class="card-header">
+                    <span class="card-category">Politics</span>
+                    <span>3 min read</span>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">International Trade Agreement Reaches Final Stage</h3>
+                    <p class="card-text">After months of negotiations, representatives from major economies have
+                        finalized terms for a landmark trade deal. The agreement is expected to boost global commerce
+                        and establish new regulatory standards...</p>
+                </div>
+                <div class="card-footer">
+                    <span>1 day ago</span>
+                    <div class="action-buttons">
+                        <div class="action-btn">
+                            <span>👍</span> 197
+                        </div>
+                        <div class="action-btn">
+                            <span>💬</span> 64
+                        </div>
+                        <div class="action-btn">
+                            <span>🔖</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card" data-category="Tech">
+                <div class="card-header">
+                    <span class="card-category">Tech</span>
+                    <span>2 min read</span>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Major Tech Company Unveils Next-Gen Smartphone</h3>
+                    <p class="card-text">The latest flagship device features revolutionary battery technology and an
+                        advanced camera system. Industry analysts predict it will set new standards for the smartphone
+                        market...</p>
+                </div>
+                <div class="card-footer">
+                    <span>4 hours ago</span>
+                    <div class="action-buttons">
+                        <div class="action-btn">
+                            <span>👍</span> 512
+                        </div>
+                        <div class="action-btn">
+                            <span>💬</span> 108
+                        </div>
+                        <div class="action-btn">
+                            <span>🔖</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card" data-category="Medicine">
+                <div class="card-header">
+                    <span class="card-category">Medicine</span>
+                    <span>3 min read</span>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Research Reveals New Insights on Preventative Healthcare</h3>
+                    <p class="card-text">A comprehensive study spanning 10 years has identified key lifestyle factors
+                        that significantly impact long-term health outcomes. The findings suggest simple interventions
+                        could reduce disease risk...</p>
+                </div>
+                <div class="card-footer">
+                    <span>1 day ago</span>
+                    <div class="action-buttons">
+                        <div class="action-btn">
+                            <span>👍</span> 346
+                        </div>
+                        <div class="action-btn">
+                            <span>💬</span> 59
+                        </div>
+                        <div class="action-btn">
+                            <span>🔖</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card" data-category="Science">
+                <div class="card-header">
+                    <span class="card-category">Science</span>
+                    <span>4 min read</span>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Astronomers Detect Unusual Signal from Distant Galaxy</h3>
+                    <p class="card-text">Using advanced radio telescopes, scientists have captured a mysterious
+                        repeating pattern from a galaxy billions of light-years away. The discovery has prompted
+                        multiple theories about its origin...</p>
+                </div>
+                <div class="card-footer">
+                    <span>2 days ago</span>
+                    <div class="action-buttons">
+                        <div class="action-btn">
+                            <span>👍</span> 423
+                        </div>
+                        <div class="action-btn">
+                            <span>💬</span> 87
+                        </div>
+                        <div class="action-btn">
+                            <span>🔖</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card" data-category="Cinema">
+                <div class="card-header">
+                    <span class="card-category">Cinema</span>
+                    <span>1 min read</span>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Classic Film Series Returns to Theaters This Summer</h3>
+                    <p class="card-text">A nationwide initiative will bring restored versions of beloved cinema classics
+                        back to the big screen. The program includes special introductions by film historians and
+                        surprise guests...</p>
+                </div>
+                <div class="card-footer">
+                    <span>12 hours ago</span>
+                    <div class="action-buttons">
+                        <div class="action-btn">
+                            <span>👍</span> 267
+                        </div>
+                        <div class="action-btn">
+                            <span>💬</span> 42
+                        </div>
+                        <div class="action-btn">
+                            <span>🔖</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            const contentCards = document.querySelectorAll('.content-card');
+            const contentGrid = document.getElementById('contentGrid');
+
+            // Function to filter content based on selected category
+            function filterContent(category) {
+                let visibleCount = 0;
+
+                // Remove any existing "no results" message
+                const existingNoResults = document.querySelector('.no-results');
+                if (existingNoResults) {
+                    existingNoResults.remove();
+                }
+
+                // Loop through all content cards
+                contentCards.forEach(card => {
+                    const cardCategory = card.getAttribute('data-category');
+
+                    // If category is "All" or matches the card's category, show the card
+                    if (category === 'All' || cardCategory === category) {
+                        card.classList.remove('hidden');
+                        // Reset animation
+                        card.style.animation = 'none';
+                        card.offsetHeight; // Trigger reflow
+                        card.style.animation = 'fadeIn 0.3s ease-in-out';
+                        visibleCount++;
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+
+                // If no cards are visible, show a message
+                if (visibleCount === 0) {
+                    const noResults = document.createElement('div');
+                    noResults.className = 'no-results';
+                    noResults.innerHTML = `
+                        <h3>No content found</h3>
+                        <p>There are currently no articles in the "${category}" category.</p>
+                    `;
+                    contentGrid.appendChild(noResults);
+                }
+            }
+
+            // Add click event listeners to category buttons
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    // Remove active class from all buttons
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+
+                    // Add active class to clicked button
+                    this.classList.add('active');
+
+                    // Get the selected category
+                    const selectedCategory = this.getAttribute('data-category');
+
+                    // Filter content based on selected category
+                    filterContent(selectedCategory);
+                });
+            });
+
+            // Initialize with "All" category
+            filterContent('All');
+
+            // Add interaction to the action buttons
+            const actionButtons = document.querySelectorAll('.action-btn');
+            actionButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    // Toggle active state for bookmark icon
+                    if (this.querySelector('span').textContent === '🔖') {
+                        if (this.classList.contains('active')) {
+                            this.classList.remove('active');
+                            this.style.color = '';
+                        } else {
+                            this.classList.add('active');
+                            this.style.color = '#4a6fa5';
+                        }
+                    }
+                    // For likes, increment counter
+                    else if (this.querySelector('span').textContent === '👍') {
+                        const likeText = this.textContent.trim();
+                        const currentLikes = parseInt(likeText.match(/\d+/)[0]);
+                        const newLikes = currentLikes + 1;
+                        this.innerHTML = `<span>👍</span> ${newLikes}`;
+                        this.style.color = '#4a6fa5';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
